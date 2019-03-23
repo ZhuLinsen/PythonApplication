@@ -55,6 +55,7 @@ def parse_chapter(url):
         return str(title)+str(content)
     except ConnectionError as e:
         print(e, "解析文章内容失败")
+
 '''
 发送邮件
 qq邮箱的密码就是授权码
@@ -89,11 +90,12 @@ def send_email(urls):
     with open('temp.txt', 'w', encoding='gbk') as f:
         f.write(temp)#把最新章节存入缓存文件当中
 
+
 '''
 接下来就是主函数了
-url是小数的章节目录
+url是小说的章节链接
 然后将当前已读章节的url存入本地缓存
-如果检测到有更新的小说
+如果检测到有更新的章节
 程序会休息8小时再工作，否则每小时检查一次
 '''
 if __name__=="__main__":
