@@ -5,7 +5,6 @@
 
 from pyquery import PyQuery as pq
 from email.mime.text import MIMEText
-from email.header import Header
 from email.utils import formataddr
 import requests, time, smtplib
 
