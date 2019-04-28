@@ -55,10 +55,12 @@ def showTicket(html):
             'wz': ''
         }
         item = i.split('|')
+        with open('station_name.json', 'r') as f:
+            station_name = json.load(f)
 
         data["train_number"]  = item[3] #车次
-        data["start_station"] = item[4]
-        data["end_station"]   = item[5]
+        data["start_station"] = station_name[item[4]]
+        data["end_station"]   = station_name[item[5]]
         data["start_time"]    = item[8]
         data["end_time"]      = item[9]
         data["duration"]      = item[10]
@@ -75,6 +77,7 @@ def showTicket(html):
         for i in name:
             if data[i]=='':
                 data[i]='-'
+
         tickets = []
         for i in name:
             tickets.append(data[i])
@@ -83,8 +86,12 @@ def showTicket(html):
 
 
 if __name__=="__main__":
-    train_date = "2019-05-01"
-    url = f"https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={train_date}&leftTicketDTO.from_station=BJP&leftTicketDTO.to_station=SHH&purpose_codes=ADULT"
+    with open('station_code.json', 'r') as f:
+        station_code = json.load(f)
+    train_date = input("请输入乘车时间(格式：2019-05-01)：\n")
+    from_station = station_code[input("请输入起始站：\n")]
+    to_station = station_code[input("请输入终点站：\n")]
+    url = f"https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={train_date}&leftTicketDTO.from_station={from_station}&leftTicketDTO.to_station={to_station}&purpose_codes=ADULT"
     html = get_info(url)
     showTicket(html)
 
