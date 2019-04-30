@@ -1,0 +1,19 @@
+ if (oSession.uriContains("https://api-eagle.amemv.com/aweme/v1/feed/")){
+            var strBody=oSession.GetResponseBodyAsString();
+            var sps = oSession.PathAndQuery.slice(-58,);
+            //FiddlerObject.alert(sps)
+            var filename = "C:/Users/HEXU/Desktop/抖音数据爬取/抖音爬取资料/raw_data" + "/" + sps + ".json";  
+            var curDate = new Date();   
+            var sw : System.IO.StreamWriter;  
+            if (System.IO.File.Exists(filename)){  
+                sw = System.IO.File.AppendText(filename);  
+                sw.Write(strBody);  
+            }  
+            else{  
+                sw = System.IO.File.CreateText(filename);  
+                sw.Write(strBody);  
+            }  
+			
+            sw.Close();  
+            sw.Dispose();  
+        }
