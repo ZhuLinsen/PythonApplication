@@ -8,7 +8,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 from email.utils import formataddr
-from threading import Thread
+from threading import Thread, Lock
 import requests, time
 import logging
 
@@ -20,6 +20,9 @@ logging.basicConfig(level=logging.INFO, filename='Fiction_log.txt', filemode='a'
 
 name = {"zhuixu": "赘婿",
         "mushenji": "牧神记"}
+
+lock = Lock()
+
 #获取章节目录
 def get_catalog(url):
     try:
@@ -72,19 +75,22 @@ def send_email(urls, fiction_name):
         msg['Subject'] = f" {name[fiction_name]} 更新啦"
 
         try:
+            lock.acquire()
             server = smtplib.SMTP_SSL(smtp_server, 465)
             server.set_debuglevel(1)
             server.login(from_addr, password)
             server.sendmail(from_addr, [to_addr], msg.as_string())
             server.quit()
-            logging.info(f'章节 {url} 发送成功')
+            logging.info(f'章节 {url} 发送成功\n')
             print("发送成功")
         except smtplib.SMTPException as e:
             print('发送失败', e)
+        finally:
+            lock.release()
 
     with open(f'{fiction_name}.txt', 'w', encoding='gbk') as f:
         f.write(temp)#把最新章节存入缓存文件当中
-        logging.info(f'正在将最新章节 {temp} 写入本地缓存')
+        logging.info(f'正在将最新章节 {temp} 写入本地缓存\n')
 
 def main(url, fiction_name):
     while True:
@@ -103,9 +109,9 @@ if __name__=="__main__":
     url_mushenji = "http://www.huanyue123.com/book/37/37849/"#牧神记章节目录列表
     url_zhuixu = "http://www.huanyue123.com/book/1/1822/"  # 赘婿章节目录列表
     with open('mushenji.txt', 'w', encoding="gbk") as f:
-        temp = f.write("http://www.huanyue123.com/book/37/37849/29313891.html")
+        temp = f.write("http://www.huanyue123.com/book/37/37849/29466353.html")
     with open('zhuixu.txt', 'w', encoding="gbk") as f:
-        temp = f.write("http://www.huanyue123.com/book/1/1822/29146272.html")
+        temp = f.write("http://www.huanyue123.com/book/1/1822/29411339.html")
     t1 = Thread(target=main, args=(url_mushenji, 'mushenji'))
     t2 = Thread(target=main, args=(url_zhuixu, 'zhuixu'))
     t1.start()
