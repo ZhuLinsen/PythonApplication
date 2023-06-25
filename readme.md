@@ -1,2 +1,2 @@
-**一些好玩的python应用**
+**some fun Python applications**
 ---------------------------
